@@ -1,0 +1,56 @@
+version: '3.2'
+
+services:
+
+  basic:
+    build:
+      context: ./docker
+    ports:
+      - ${BASIC_PORT}:80
+    volumes:
+      # Re-use local composer cache via host-volume
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      # Mount source-code for development
+      - ./:/app
+    environment:
+      XDEBUG_CONFIG: "remote_host=192.168.223.1 remote_port=9005 remote_enable=1"
+      PHP_IDE_CONFIG: "serverName=Docker"
+    links:
+      - db
+    depends_on:
+      - db
+    networks:
+      - internal
+
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - ./database/pgsql/data:/var/lib/postgresql/data
+      - .:/app
+    environment:
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASS}
+    restart: always
+    working_dir: /app
+    ports:
+      - ${DB_PORT}:5432
+    networks:
+      - internal
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - ${ADMINER_PORT}:8080
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.223.0/28
