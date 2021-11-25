@@ -29,7 +29,7 @@ class TelegramService extends Component
         $url    = str_replace(['<method>', '<token>'], [$method, $this->token], self::TEMP_URL);
 
         $client = new Client();
-        $response = $client->post($url, $params);
+        $response = $client->post($url, ['form_params' => $params]);
 
         return json_decode($response->getBody()->getContents(),true);
     }

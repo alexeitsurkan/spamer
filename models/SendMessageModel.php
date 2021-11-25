@@ -1,5 +1,7 @@
 <?php namespace app\models;
 
+use app\components\telegram\TelegramService;
+use app\models\Entity\Chat;
 use yii\base\Model;
 
 /**
@@ -8,17 +10,21 @@ use yii\base\Model;
  */
 class SendMessageModel extends Model
 {
-    public $message;
+    public $chat_id;
+    public $text;
 
     public function rules()
     {
         return [
-            ['message', 'string']
+            ['text', 'string'],
+            ['chat_id', 'integer']
         ];
     }
 
     public function send()
     {
+        $chat = Chat::findOne($this->chat_id);
+        (new TelegramService())->sendMessage($chat->sid,$this->text);
         return true;
     }
 }

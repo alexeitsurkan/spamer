@@ -3,6 +3,7 @@
 use yii\bootstrap\ActiveForm;
 
 /**
+ * @var $chat_list
  * @var $model
  */
 ?>
@@ -12,8 +13,9 @@ use yii\bootstrap\ActiveForm;
             <div class="card-body">
 
                 <?php $form = ActiveForm::begin(); ?>
+                <?= $form->field($model,'chat_id')->label('чат')->dropDownList($chat_list)?>
                 <?= $form
-                    ->field($model, 'message')
+                    ->field($model, 'text')
                     ->textarea(
                         [
                             'rows' => '15'
