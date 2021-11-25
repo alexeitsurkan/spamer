@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
-    'name' => 'Tele.News',
+    'name' => 'spamer',
     'basePath' => dirname(__DIR__),
     'language' => 'ru-RU',
     'bootstrap' => ['log'],
@@ -21,33 +21,9 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'user' => [
-            'class' => app\components\User::class,
-            'identityClass' => app\models\Entity\User::class,
-            'enableAutoLogin' => false,
-            'loginUrl' => ['/user/login']
-        ],
-        'notifier' =>[
-            'class' => app\components\Notifier::class,
-        ],
-        'errorHandler' => [
-            'errorAction' => 'home/error',
-        ],
         'authManager' => [
             'class' => \yii\rbac\DbManager::class,
             'cache' => 'cache' //Включаем кеширование
-        ],
-        'mailer' => [
-            'class' => \yii\swiftmailer\Mailer::class,
-            'useFileTransport' => false,
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'encryption' => 'tls',
-                'host' => 'smtp.gmail.com',
-                'port' => '587',
-                'username' => 'yougdzcom@gmail.com', //todo a.curkan добавить
-                'password' => '', //todo a.curkan добавить
-            ],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -63,21 +39,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-                '/' => 'news/index',
-            ],
-        ],
-        'i18n' => [
-            'translations' => [
-                'app*' => [
-                    'class' => 'yii\i18n\PhpMessageSource',
-                    'sourceLanguage' => 'en-US',
-                    'basePath'       => '@app/lang',
-                    'fileMap' => [
-                        'lang/app' => 'app.php',
-                    ],
-                ],
-            ],
+            'rules' => [],
         ],
     ],
     'params' => $params,
