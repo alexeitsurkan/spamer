@@ -1,7 +1,6 @@
 version: '3.2'
 
 services:
-
   basic:
     build:
       context: ./docker
@@ -53,4 +52,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 192.168.223.0/28
+        - subnet: 192.168.223.0/29

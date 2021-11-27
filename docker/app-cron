@@ -1,0 +1,8 @@
+#cron_manager
+
+* * * * * /usr/local/bin/php /app/yii cron_manager/default/run
+
+
+
+
+

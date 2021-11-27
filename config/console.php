@@ -13,15 +13,30 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
+    'modules'             => [
+        'cron_manager'     => [
+            'class' => app\commands\modules\cron_manager\CronManager::class,
+        ],
+    ],
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'log' => [
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+        'log'                => [
+            'traceLevel' => 3,
+            'targets'    => [
+                'db'       => [
+                    'class'          => yii\log\DbTarget::class,
+                    'levels'         => ['error', 'info', 'warning'],
+                    'exportInterval' => 2,
+                    'except'         => [
+                        'yii\web\HttpException:404',
+                        'yii\db\Command::execute',
+                        'yii\db\Command::query',
+                        'yii\web\Session::open',
+                        'yii\db\Connection::open',
+                        'application',
+                    ],
                 ],
             ],
         ],

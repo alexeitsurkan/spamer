@@ -26,8 +26,15 @@ RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 WORKDIR /app
 
 COPY docker-entrypoint.sh /usr/local/bin
+COPY app-cron /etc/cron.d/app-cron
+
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/app-cron
+
+# Apply cron job
+RUN crontab /etc/cron.d/app-cron
 
 ENTRYPOINT ["sh","/usr/local/bin/docker-entrypoint.sh"]
 
 #запускаем процесс apache2
-CMD service cron start && service rsyslog start && /usr/sbin/apache2ctl -D FOREGROUND
+CMD cron && service rsyslog start && /usr/sbin/apache2ctl -D FOREGROUND
