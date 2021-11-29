@@ -1,8 +1,5 @@
 <?php
 
-use app\components\crons\AnecdoteParseCronTask;
-use GuzzleHttp\Client;
-
 require __DIR__ . '/../vendor/autoload.php';
 
 define('YII_DEBUG', env('YII_DEBUG'));

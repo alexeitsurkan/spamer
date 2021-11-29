@@ -2,8 +2,8 @@
 
 use app\modules\anecdote\components\crons\AnecdotePostCronTask;
 use app\modules\anecdote\components\crons\PlohiePesniPostCronTask;
-use app\modules\anecdote\components\parsers\AnecdoteParse;
-use app\modules\anecdote\components\parsers\PlohiePesniParse;
+use app\modules\citaty\components\crons\CitatyPostCronTask;
+use app\modules\citaty\components\parsers\CitatyParse;
 use yii\console\Controller;
 
 /**
@@ -12,10 +12,16 @@ use yii\console\Controller;
  */
 class SyncController extends Controller
 {
+//    public function actionUpdate()
+//    {
+//        (new TelegramAPI())->getUpdates();
+//    }
+
     public function actionParse()
     {
-        (new PlohiePesniParse())->execute();
-        (new AnecdoteParse())->execute();
+//        (new PlohiePesniParse())->execute();
+//        (new AnecdoteParse())->execute();
+        (new CitatyParse())->execute();
     }
 
     public function actionPostAnecdote()
@@ -26,5 +32,11 @@ class SyncController extends Controller
     public function actionPostPlohiePesni()
     {
         (new PlohiePesniPostCronTask())->run();
+    }
+
+
+    public function actionPostCitaty()
+    {
+        (new CitatyPostCronTask())->run();
     }
 }

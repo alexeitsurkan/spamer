@@ -1,6 +1,7 @@
 <?php namespace app\modules\anecdote\components\parsers;
 
 use app\modules\anecdote\models\Entity\Anecdote;
+use app\components\AbstractParse;
 
 /**
  * Class AnecdoteParse

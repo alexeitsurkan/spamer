@@ -1,4 +1,4 @@
-<?php namespace app\modules\anecdote\components\parsers;
+<?php namespace app\components;
 
 use DOMDocument;
 use DOMXPath;
@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 
 /**
  * Class AbstractParse
- * @package app\components\parsers
+ * @package app\modules\citaty\components\parsers
  */
 abstract class AbstractParse
 {

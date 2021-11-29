@@ -11,21 +11,10 @@ use Yii;
  */
 class PlohiePesniPostCronTask extends AbstractTask
 {
-    // фоновые изображения
-    private static $image_template = [
-        'texture.jpg',
-        'black.png',
-        'gray.jpg',
-        'bluu.jpg',
-        'red.jpg',
-        'asd.jpg',
-        'black2.jpg',
-    ];
-
     //таймер
     public function getSchedulerTime(): string
     {
-        return "*/60 * * * *";
+        return "*/75 6-23 * * *";
     }
 
     //отправка поста
@@ -50,7 +39,10 @@ class PlohiePesniPostCronTask extends AbstractTask
         $im_width  = 700;
         $im_height = round(500 + $row_count * (500 / 100 * 7));
 
-        $im_path = Yii::getAlias('@app/web/images/' . self::$image_template[rand(0, count(self::$image_template) - 1)]);
+        $images_folder = Yii::getAlias('@app/modules/anecdote/web/images');
+        $images = scandir($images_folder);
+
+        $im_path = Yii::getAlias($images_folder.'/' . $images[rand(2, count($images) - 1)]);
         if (preg_match('/^.*(.png)$/', $im_path)) {
             $im0 = imagecreatefrompng($im_path);
         } else {

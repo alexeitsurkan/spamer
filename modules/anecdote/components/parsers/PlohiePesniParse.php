@@ -1,6 +1,7 @@
 <?php namespace app\modules\anecdote\components\parsers;
 
 use app\modules\anecdote\models\Entity\PlohiePesni;
+use app\components\AbstractParse;
 
 /**
  * Class PlohiePesniParse
