@@ -13,7 +13,7 @@ class SocService extends Component
     private $param;
 
     public static $platform = [
-//        TelegramService::class,
+        TelegramService::class,
         VkontakteService::class,
     ];
 
