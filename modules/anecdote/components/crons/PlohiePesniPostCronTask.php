@@ -14,7 +14,7 @@ class PlohiePesniPostCronTask extends AbstractTask
     //таймер
     public function getSchedulerTime(): string
     {
-        return "*/75 6-23 * * *";
+        return "*/175 6-23 * * *";
     }
 
     //отправка поста

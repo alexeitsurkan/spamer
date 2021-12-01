@@ -13,7 +13,7 @@ class AnecdotePostCronTask extends AbstractTask
     //таймер
     public function getSchedulerTime(): string
     {
-        return "*/30 6-23 * * *";
+        return "*/60 6-23 * * *";
     }
 
     //отправка поста
