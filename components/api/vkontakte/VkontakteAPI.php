@@ -34,19 +34,17 @@ class VkontakteAPI
         $params['access_token'] = $this->token;
         $params['v']            = '5.131';
 
-        $json = file_get_contents($url . '?' . http_build_query($params));
-
         $client   = new Client();
         $response = $client->post($url, ['form_params' => $params]);
         $content  = json_decode($response->getBody()->getContents(), true);
 
-        if ($content['error']) {
+        if (isset($content['error'])) {
             throw new \Exception($content['error']['error_msg'], $content['error']['error_code']);
         }
         return $content['response'];
     }
 
-    public function wallPost($group_id, $text = '', array $photo = []): array
+    public function wallPost($group_id, $text = '', string $link = '', array $photo = []): array
     {
         $temp_attachmet = '<type><owner_id>_<media_id>';
         $params         = [
@@ -63,6 +61,9 @@ class VkontakteAPI
                 ['photo', $photo['owner_id'], $photo['id']],
                 $temp_attachmet
             );
+        }
+        if($link){
+            $params['attachments'][] = $link;
         }
 
 
