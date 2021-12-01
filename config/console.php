@@ -22,6 +22,9 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'soc'       => [
+            'class' => \app\components\soc\SocService::class,
+        ],
         'log'                => [
             'traceLevel' => 3,
             'targets'    => [

@@ -1,19 +1,19 @@
-<?php namespace app\components\telegram\api;
+<?php namespace app\components\api\telegram;
 
 use GuzzleHttp\Client;
 
 /**
  * Class TelegramAPI
- * @package app\components\telegram\api
+ * @package app\components\api\telegram
  */
 class TelegramAPI
 {
     protected const TEMP_URL = 'https://api.telegram.org/bot<token>/<method>';
     protected $token;
 
-    public function __construct()
+    public function __construct($token)
     {
-        $this->token = env('TELEGRAM_BOT_TOKEN');
+        $this->token = $token;
     }
 
     /**
@@ -48,8 +48,9 @@ class TelegramAPI
             'chat_id' => $chat_id,
             'text'    => $text,
         ];
+        $response = $this->sendQuery('sendMessage', $params);
 
-        return $this->sendQuery('sendMessage', $params);
+        return $response['ok'];
     }
 
     /**
@@ -78,7 +79,9 @@ class TelegramAPI
                 ]
             ]
         );
+
+        $response = json_decode($response->getBody()->getContents(), true);
+
+        return $response['ok'];
     }
-
-
 }

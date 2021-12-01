@@ -26,6 +26,9 @@ $config = [
         'cache'       => [
             'class' => 'yii\caching\FileCache',
         ],
+        'soc'       => [
+            'class' => \app\components\soc\SocService::class,
+        ],
         'authManager' => [
             'class' => \yii\rbac\DbManager::class,
             'cache' => 'cache' //Включаем кеширование

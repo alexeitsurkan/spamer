@@ -1,7 +1,7 @@
 <?php namespace app\modules\citaty\components\crons;
 
 use app\commands\modules\cron_manager\models\AbstractTask;
-use app\components\telegram\api\TelegramAPI;
+use app\components\api\telegram\TelegramAPI;
 use app\modules\citaty\models\Entity\Citaty;
 use Yii;
 
