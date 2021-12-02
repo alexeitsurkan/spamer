@@ -14,7 +14,7 @@ class CitatyPostCronTask extends AbstractTask
     //таймер
     public function getSchedulerTime(): string
     {
-        return "*/204 6-23 * * *";
+        return "*/100 6-23 * * *";
     }
 
     //отправка поста
