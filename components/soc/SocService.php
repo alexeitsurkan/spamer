@@ -35,6 +35,7 @@ class SocService extends Component
             $service = new $platform();
             $service->sendMessage($this->param, $text);
         }
+        return true;
     }
 
     /**
@@ -48,6 +49,7 @@ class SocService extends Component
             $service = new $platform();
             $service->sendPhoto($this->param, $photo_path);
         }
+        return true;
     }
 
 }

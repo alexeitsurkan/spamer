@@ -1,6 +1,7 @@
 <?php namespace app\modules\anecdote\components\crons;
 
 use app\commands\modules\cron_manager\models\AbstractTask;
+use app\components\ImageConstructor;
 use app\modules\anecdote\models\Entity\Anecdote;
 use Yii;
 
@@ -19,63 +20,29 @@ class AnecdotePostCronTask extends AbstractTask
     //отправка поста
     public function execute(): void
     {
-        $text = $this->getText();
-        if (mb_strlen($text) > 240) {
-            Yii::$app->soc->for('anecdote')->sendMessage($text);
-        } else {
-            $photo_path = $this->gePhoto($text);
-            Yii::$app->soc->for('anecdote')->sendPhoto($photo_path);
+        try {
+            $text = $this->getText();
+            if (mb_strlen($text) > 240) {
+                Yii::$app->soc->for('anecdote')->sendMessage($text);
+            } else {
+                $path = (new ImageConstructor())
+                    ->setText($text)
+                    ->setWatermark('СмеXлыст@smehlist')
+                    ->setBackgroundImage($this->getImagePath())
+                    ->create()
+                ;
+                Yii::$app->soc->for('anecdote')->sendPhoto($path);
+            }
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage(), __METHOD__);
         }
     }
 
-
-    private function gePhoto($text): string
-    {
-        array_map('unlink', glob(Yii::getAlias("@app/runtime/photo_post/*")));
-
-        $row_count = substr_count($text, "\n");
-
-        $im_width  = 700;
-        $im_height = round(500 + $row_count * (500 / 100 * 7));
-
-        $images_folder = Yii::getAlias('@app/modules/anecdote/web/images');
-        $images        = scandir($images_folder);
-
-        $im_path = Yii::getAlias($images_folder . '/' . $images[rand(2, count($images) - 1)]);
-        if (preg_match('/^.*(.png)$/', $im_path)) {
-            $im0 = imagecreatefrompng($im_path);
-        } else {
-            $im0 = imagecreatefromjpeg($im_path);
-        }
-        $im = imagecrop($im0, ['x' => 0, 'y' => 0, 'width' => $im_width, 'height' => $im_height]);
-
-        $white = imagecolorallocate($im, 255, 255, 255);
-        $blue  = imagecolorallocate($im, 75, 215, 195);
-
-        // Путь к ttf файлу шрифта
-        $font_file = Yii::getAlias('@app/web/fonts/AlegreyaSC-Bold.ttf');
-
-
-        $size = 28;
-        $x    = round($im_width * 0.15 - $row_count * ($im_width * 0.15 / 100 * 2.7));
-        $y    = round($im_height * 0.4 - $row_count * ($im_height * 0.4 / 100 * 7));
-
-        // Рисуем текст
-        imagefttext($im, $size, 0, $x, $y, $white, $font_file, $text);
-        imagefttext($im, 22, 0, $x / 3, $im_height - 20, $blue, $font_file, 'СмеXлыст@smehlist');
-
-        if (!is_dir(Yii::getAlias('@app/runtime/photo_post'))) {
-            mkdir(Yii::getAlias('@app/runtime/photo_post'), 0700);
-        }
-        $path = Yii::getAlias('@app/runtime/photo_post/' . time() . '.png');
-
-        imagepng($im, $path);
-        imagedestroy($im);
-
-        return $path;
-    }
-
-    private function getText()
+    /**
+     * @return string
+     * @throws \yii\db\Exception
+     */
+    private function getText(): string
     {
         $model = Anecdote::find()
             ->where(
@@ -126,5 +93,17 @@ class AnecdotePostCronTask extends AbstractTask
         $text = trim($text);
 
         return $text;
+    }
+
+
+    /**
+     * @return string
+     */
+    private function getImagePath(): string
+    {
+        $images_folder = Yii::getAlias('@app/modules/anecdote/web/images');
+        $images        = scandir($images_folder);
+
+        return $images_folder . '/' . $images[rand(2, count($images) - 1)];
     }
 }
