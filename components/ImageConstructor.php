@@ -73,6 +73,7 @@ class ImageConstructor
         //удаляем предыдущие фото
         array_map('unlink', glob(Yii::getAlias("@app/runtime/photo_post/*")));
 
+        //количество строк в тексте
         $row_count = substr_count($this->text, "\n");
 
         $im_width  = 700;
@@ -83,13 +84,28 @@ class ImageConstructor
         } else {
             $im0 = imagecreatefromjpeg($this->background_image_path);
         }
-        $im = imagecrop($im0, ['x' => 0, 'y' => 0, 'width' => $im_width, 'height' => $im_height]);
 
+        $im=imagecreatetruecolor($im_width,$im_height);
+
+        $new_height = imagesy($im0)/100*(1000/(imagesx($im0)/100));
+        imagecopyresampled($im,$im0,0,0,0,0, 1000, $new_height,imagesx($im0),imagesy($im0));
+
+        $im = imagecrop($im, ['x' => 0, 'y' => 0, 'width' => $im_width, 'height' => $im_height]);
+
+        //накладываем полу прозрачную тень
+        $img_cover      = imagecreatefrompng(Yii::getAlias("@app/web/images/transparent.png"));
+        imagealphablending($img_cover, true);
+        imagesavealpha($img_cover, true);
+        imagealphablending($img_cover, true);
+        imagesavealpha($img_cover, true);
+        imagecopy($im, $img_cover, 0, 0, 0, 0, imagesx($img_cover), imagesy($img_cover));
+
+
+        // Рисуем текст
         $size = 28;
         $x    = round($im_width * 0.15 - $row_count * ($im_width * 0.15 / 100 * 2.7));
         $y    = round($im_height * 0.4 - $row_count * ($im_height * 0.4 / 100 * 7));
 
-        // Рисуем текст
         $color = $this->colorAllocate($im, $this->text_color);
         imagefttext($im, $size, 0, $x, $y, $color, $this->font, $this->text);
 

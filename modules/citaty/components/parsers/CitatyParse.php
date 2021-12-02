@@ -2,6 +2,7 @@
 
 use app\components\AbstractParse;
 use app\modules\citaty\models\Entity\Citaty;
+use app\modules\citaty\models\Entity\CitatyTheme;
 
 /**
  * Class CitatyParse
@@ -29,28 +30,27 @@ class CitatyParse extends AbstractParse
             $xpath   = $this->getXpath($topic_href);
             $entries = $xpath->evaluate('//div[@class="node__content"]');
             foreach ($entries as $entry) {
-                $data =[];
-                foreach ($entry->childNodes as $child){
+                $data = [];
+                foreach ($entry->childNodes as $child) {
                     $str = trim($child->nodeValue);
-                    $str = preg_replace('/[\s]{2,}/',' ',$str);
-                    $str = preg_replace('/\n/','',$str);
-                    $str = preg_replace('/Пояснение к цитате:.*/','',$str);
-                    if(!empty($str) && $str != 'Цитата на английском') $data[] = $str;
+                    $str = preg_replace('/[\s]{2,}/', ' ', $str);
+                    $str = preg_replace('/\n/', '', $str);
+                    $str = preg_replace('/Пояснение к цитате:.*/', '', $str);
+                    if (!empty($str) && $str != 'Цитата на английском') {
+                        $data[] = $str;
+                    }
                 }
                 $text = array_shift($data);
                 array_pop($data);
 
-
-                try{
-                    $model         = new Citaty();
-                    $model->text   = $text;
-                    $model->info = implode(', ', $data);
-                    $model->theme  = $topic_name;
+                try {
+                    $model           = new Citaty();
+                    $model->text     = $text;
+                    $model->info     = implode(', ', $data);
+                    $model->theme_id = $this->getThemeId($topic_name);
                     $model->save();
-                }catch (\Exception $e) {
-
+                } catch (\Exception $e) {
                 }
-
             }
             $entries = $xpath->evaluate('//ul[@class="pager pager-regular"]/li[@class="pager-item pager-next last"]/a');
             if ($entries[0]) {
@@ -59,5 +59,21 @@ class CitatyParse extends AbstractParse
                 break;
             }
         } while (true);
+    }
+
+    /**
+     * @param $topic_name
+     * @return mixed
+     */
+    private function getThemeId($topic_name)
+    {
+        $model = CitatyTheme::findOne(['name' => $topic_name]);
+        if ($model === null) {
+            $model       = new CitatyTheme();
+            $model->name = $topic_name;
+            $model->save();
+        }
+
+        return $model->id;
     }
 }

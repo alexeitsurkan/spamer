@@ -33,7 +33,7 @@ class CitatyPostCronTask extends AbstractTask
                     ->setTitle('')
                     ->setText($text)
                     ->setWatermark($watermark)
-                    ->setBackgroundImage($this->getImagePath())
+                    ->setBackgroundImage($this->getImagePath($model->theme_id))
                     ->create()
                 ;
                 Yii::$app->soc->for('citaty')->sendPhoto($path);
@@ -83,11 +83,18 @@ class CitatyPostCronTask extends AbstractTask
     /**
      * @return string
      */
-    private function getImagePath(): string
+    private function getImagePath($theme_id): string
     {
         $images_folder = Yii::getAlias('@app/modules/citaty/web/images');
-        $images        = scandir($images_folder);
+        $items        = scandir($images_folder);
+        foreach ($items as $item){
+            if(is_dir($images_folder . '/' . $item) && preg_match("/_{$theme_id}_/",$item)){
+                $images = scandir($images_folder . '/' . $item);
+                return $images_folder . '/'. $item . '/' . $images[rand(2, count($images) - 1)];
+            }
+        }
 
-        return $images_folder . '/' . $images[rand(2, count($images) - 1)];
+        $images = scandir($images_folder . '/default/');
+        return $images_folder . '/default/' . $images[rand(2, count($images) - 1)];
     }
 }

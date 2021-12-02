@@ -3,18 +3,13 @@
 use yii\db\ActiveRecord;
 
 /**
- * Class Citaty
+ * Class CitatyTheme
  * @package app\modules\citaty\models\Entity
- * @property $id
- * @property $text
- * @property $info
- * @property $theme_id
- * @property $viewed
  */
-class Citaty extends ActiveRecord
+class CitatyTheme extends ActiveRecord
 {
     public static function tableName()
     {
-        return 'citaty';
+        return 'citaty_theme';
     }
 }
